@@ -292,4 +292,24 @@ public class QuerydslBasicTest {
                 .containsExactly("teamA", "teamB");
 
     }
+
+    /**
+     * 회원과 팀을 조인하면서, 팀 이름이 teamA인 팀만 조인, 회원은 모두 조회
+     * JPQL : select m, t from Member m left join m.team t on t.name = 'teamA'
+     * @throws Exception
+     */
+    @Test
+    @DisplayName("조인 - on절 테스트 (1. 조인 대상 필터링)")
+    void join_on_filtering() throws Exception {
+        List<Tuple> result = queryFactory
+                .select(member, team)
+                .from(member)
+                .leftJoin(member.team, team)
+                .on(team.name.eq("teamA"))
+                .fetch();
+
+        for (Tuple tuple : result) {
+            System.out.println("tuple = " + tuple);
+        }
+    }
 }
