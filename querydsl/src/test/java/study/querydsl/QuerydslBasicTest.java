@@ -15,6 +15,7 @@ import study.querydsl.controller.entity.Team;
 import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.*;
+import static study.querydsl.controller.entity.QMember.*;
 
 @SpringBootTest
 @Transactional
@@ -23,8 +24,11 @@ public class QuerydslBasicTest {
     @Autowired
     EntityManager em;
 
+    JPAQueryFactory queryFactory;
+
     @BeforeEach
     public void before() {
+        queryFactory = new JPAQueryFactory(em);
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
         em.persist(teamA);
@@ -63,14 +67,13 @@ public class QuerydslBasicTest {
     @DisplayName("QueryDSL 테스트")
     void startQuerydsl() throws Exception {
         // given
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        QMember m = new QMember("m");
+//        QMember m = new QMember("m"); // 별칭 직접 지정
 
         // when
         Member findByQuerydsl = queryFactory
-                .select(m)
-                .from(m)
-                .where(m.username.eq("member1"))
+                .select(member)
+                .from(member)
+                .where(member.username.eq("member1"))
                 .fetchOne();
 
         // then
