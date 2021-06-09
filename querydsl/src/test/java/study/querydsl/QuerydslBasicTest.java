@@ -269,4 +269,27 @@ public class QuerydslBasicTest {
                 .containsExactly("member1", "member2");
 
     }
+
+    /**
+     * 세타 조인
+     * 회원의 이름이 팀 이름과 같은 회원 조회
+     * @throws Exception
+     */
+    @Test
+    @DisplayName("세타 조인")
+    void theta_join() throws Exception {
+        em.persist(new Member("teamA"));
+        em.persist(new Member("teamB"));
+
+        List<Member> result = queryFactory
+                .select(member)
+                .from(member, team)
+                .where(member.username.eq(team.name))
+                .fetch();
+
+        assertThat(result)
+                .extracting("username")
+                .containsExactly("teamA", "teamB");
+
+    }
 }
